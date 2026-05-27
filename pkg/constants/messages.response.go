@@ -21,7 +21,9 @@ const (
 	MessageENConflict           = "Resource already exists"
 	MessageENUnprocessable      = "Unable to process the request"
 	MessageENSomethingWentWrong = "Something went wrong, please try again later"
-	MessageENServiceUnavailable = "Service is temporarily unavailable"
+	MessageENServiceUnavailable   = "Service is temporarily unavailable"
+	MessageENInsufficientPoints   = "Insufficient points to claim this reward"
+	MessageENRewardAlreadyClaimed = "Reward has already been claimed"
 )
 
 const (
@@ -33,5 +35,7 @@ const (
 	MessageTHConflict           = "ข้อมูลนี้มีอยู่แล้วในระบบ"
 	MessageTHUnprocessable      = "ไม่สามารถประมวลผลคำขอได้"
 	MessageTHSomethingWentWrong = "เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง"
-	MessageTHServiceUnavailable = "บริการไม่พร้อมใช้งานชั่วคราว"
+	MessageTHServiceUnavailable   = "บริการไม่พร้อมใช้งานชั่วคราว"
+	MessageTHInsufficientPoints   = "แต้มไม่เพียงพอสำหรับการรับรางวัลนี้"
+	MessageTHRewardAlreadyClaimed = "รับรางวัลนี้ไปแล้ว"
 )
