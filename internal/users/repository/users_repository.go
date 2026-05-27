@@ -15,22 +15,22 @@ import (
 )
 
 type UsersRepository struct {
-	db             *gorm.DB
-	jwtSecret      string
-	jwtExpireHours int
+	db        *gorm.DB
+	jwtSecret string
+	jwtTTL    time.Duration
 }
 
 type UsersRepositoryCfg struct {
-	DB             *gorm.DB
-	JWTSecret      string
-	JWTExpireHours int
+	DB        *gorm.DB
+	JWTSecret string
+	JWTTTL    time.Duration
 }
 
 func NewUsersRepository(cfg UsersRepositoryCfg) domain.UserRepository {
 	return &UsersRepository{
-		db:             cfg.DB,
-		jwtSecret:      cfg.JWTSecret,
-		jwtExpireHours: cfg.JWTExpireHours,
+		db:        cfg.DB,
+		jwtSecret: cfg.JWTSecret,
+		jwtTTL:    cfg.JWTTTL,
 	}
 }
 
@@ -51,8 +51,7 @@ func (r *UsersRepository) Login(ctx context.Context, req domain.LoginInput) (*do
 		return nil, err
 	}
 
-	ttl := time.Duration(r.jwtExpireHours) * time.Hour
-	token, err := auth.GenerateToken(m.ID, m.Nickname, r.jwtSecret, ttl)
+	token, err := auth.GenerateToken(m.ID, m.Nickname, r.jwtSecret, r.jwtTTL)
 	if err != nil {
 		log.Error().Err(err).Uint("user_id", m.ID).Msg("failed to generate token")
 		return nil, err

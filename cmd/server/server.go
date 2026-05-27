@@ -83,7 +83,7 @@ func NewServer(cfg *config.Config) *fiber.App {
 	})
 
 	validate := validator.New()
-	_ = time.Duration(cfg.JWTExpireHours) * time.Hour
+	jwtTTL := time.Duration(cfg.JWTExpireHours) * time.Hour
 
 	api := app.Group("/api/v1")
 	api.Use(middleware.JWTProtected(cfg.JWTSecret))
@@ -92,10 +92,10 @@ func NewServer(cfg *config.Config) *fiber.App {
 		PublicApp:    app,
 		ProtectedApp: api,
 		WriteDB:      writeDB,
-		Redis:        rdb,
 		Logger:       logger,
 		Validate:     validate,
-		Cfg:          cfg,
+		JWTSecret:    cfg.JWTSecret,
+		JWTTTL:       jwtTTL,
 	}.NewUsersRouter()
 
 	app.Use(func(c *fiber.Ctx) error {
