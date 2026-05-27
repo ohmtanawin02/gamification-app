@@ -16,7 +16,7 @@ import (
 // @title           Gamification API
 // @version         1.0
 // @description     Gamification Web App API
-// @host            localhost:9393
+// @host            gamification-app-qie0.onrender.com
 // @BasePath        /
 // @securityDefinitions.apikey BearerAuth
 // @in header

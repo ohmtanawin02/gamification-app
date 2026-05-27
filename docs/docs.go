@@ -421,7 +421,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "localhost:9393",
+	Host:             "gamification-app-qie0.onrender.com",
 	BasePath:         "/",
 	Schemes:          []string{},
 	Title:            "Gamification API",

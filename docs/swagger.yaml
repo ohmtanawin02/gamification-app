@@ -25,7 +25,7 @@ definitions:
     required:
     - points_earned
     type: object
-host: localhost:9393
+host: gamification-app-qie0.onrender.com
 info:
   contact: {}
   description: Gamification Web App API
