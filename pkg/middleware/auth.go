@@ -26,6 +26,7 @@ func JWTProtected(jwtSecret string) fiber.Handler {
 		}
 
 		ctx := auth.SetUserID(c.UserContext(), claims.UserID)
+		ctx = auth.SetNickname(ctx, claims.Nickname)
 		c.SetUserContext(ctx)
 		return c.Next()
 	}
