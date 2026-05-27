@@ -22,13 +22,3 @@ func toRewardEntities(rewards []models.Rewards) []domain.Rewards {
 	}
 	return result
 }
-
-func toRewardModel(r domain.Rewards) models.Rewards {
-	return models.Rewards{
-		ID:         r.ID,
-		Name:       r.Name,
-		CheckPoint: r.CheckPoint,
-		CreatedAt:  r.CreatedAt,
-		UpdatedAt:  r.UpdatedAt,
-	}
-}
