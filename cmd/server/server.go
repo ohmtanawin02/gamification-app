@@ -14,6 +14,7 @@ import (
 	"github.com/rs/zerolog"
 
 	"gamification-app/config"
+	gamesHandler "gamification-app/internal/games/handler"
 	rewardsHandler "gamification-app/internal/rewards/handler"
 	usersHandler "gamification-app/internal/users/handler"
 	"gamification-app/pkg/common"
@@ -106,6 +107,14 @@ func NewServer(cfg *config.Config) *fiber.App {
 		Logger:       logger,
 		Validate:     validate,
 	}.NewRewardsRouter()
+
+	gamesHandler.NewGamesRouterCfg{
+		PublicApp:    app,
+		ProtectedApp: api,
+		WriteDB:      writeDB,
+		Logger:       logger,
+		Validate:     validate,
+	}.NewGamesRouter()
 
 	app.Use(func(c *fiber.Ctx) error {
 		return common.ResponseJsonWithCode(c, fiber.StatusNotFound, uuid.New(),
