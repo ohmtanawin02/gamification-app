@@ -58,6 +58,6 @@ func Spin(cfg GamesSpinHandlerCfg) fiber.Handler {
 		}
 
 		return common.ResponseJsonWithCode(c, fiber.StatusOK, uuid.Nil,
-			constants.CodeOK, constants.MessageENSuccess, constants.MessageTHSuccess, result)
+			constants.CodeOK, constants.MessageENSuccess, constants.MessageTHSuccess, dto.ToSpinResponse(result))
 	}
 }
