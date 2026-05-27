@@ -54,3 +54,15 @@ func (s *UsersService) FindUserByNickname(ctx context.Context, nickname string) 
 
 	return user, nil
 }
+
+func (s *UsersService) FindUserRewardsByUserID(ctx context.Context, userID uint) ([]domain.UserRewardItem, error) {
+	log := common.NewAppLogger(ctx, "UsersService.FindUserRewardsByUserID")
+
+	items, err := s.repo.FindUserRewardsByUserID(ctx, userID)
+	if err != nil {
+		log.Error().Err(err).Uint("user_id", userID).Msg("find user rewards failed")
+		return nil, err
+	}
+
+	return items, nil
+}

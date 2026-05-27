@@ -2,6 +2,8 @@ package repository
 
 import (
 	"context"
+	"time"
+
 	"gamification-app/internal/rewards/domain"
 	"gamification-app/internal/rewards/repository/models"
 	"gamification-app/pkg/common"
@@ -56,6 +58,62 @@ func (r *RewardsRepository) FindAll(ctx context.Context, req domain.FindAllRewar
 	}
 
 	return domain.FindAllRewardsResult{Items: toRewardEntities(ms), Total: total}, nil
+}
+
+func (r *RewardsRepository) FindUserRewards(ctx context.Context, req domain.FindUserRewardsRequest) (domain.FindUserRewardsResult, error) {
+	log := common.NewRepoLogger(ctx, "RewardsRepository.FindUserRewards")
+
+	if req.Page <= 0 {
+		req.Page = 1
+	}
+	if req.Limit <= 0 || req.Limit > 100 {
+		req.Limit = 20
+	}
+
+	type row struct {
+		ID         uint
+		Name       string
+		CheckPoint int
+		ClaimedAt  time.Time
+	}
+
+	baseQuery := r.db.WithContext(ctx).
+		Table("user_rewards ur").
+		Joins("JOIN rewards r ON r.id = ur.reward_id").
+		Joins("JOIN users u ON u.id = ur.user_id")
+
+	if req.Nickname != "" {
+		baseQuery = baseQuery.Where("u.nickname ILIKE ?", "%"+req.Nickname+"%")
+	}
+
+	var total int64
+	if err := baseQuery.Count(&total).Error; err != nil {
+		log.Error().Err(err).Msg("count failed")
+		return domain.FindUserRewardsResult{}, err
+	}
+
+	var rows []row
+	offset := (req.Page - 1) * req.Limit
+	if err := baseQuery.
+		Select("r.id, r.name, r.check_point, ur.claimed_at").
+		Offset(offset).Limit(req.Limit).
+		Order("ur.claimed_at DESC").
+		Scan(&rows).Error; err != nil {
+		log.Error().Err(err).Msg("find failed")
+		return domain.FindUserRewardsResult{}, err
+	}
+
+	items := make([]domain.UserReward, len(rows))
+	for i, r := range rows {
+		items[i] = domain.UserReward{
+			ID:         r.ID,
+			Name:       r.Name,
+			CheckPoint: r.CheckPoint,
+			ClaimedAt:  r.ClaimedAt,
+		}
+	}
+
+	return domain.FindUserRewardsResult{Items: items, Total: total}, nil
 }
 
 func (r *RewardsRepository) ClaimReward(ctx context.Context, userID uint, rewardID uint) error {

@@ -30,6 +30,18 @@ func (s *RewardsService) FindAll(ctx context.Context, req domain.FindAllRewardsR
 	return result, nil
 }
 
+func (s *RewardsService) FindUserRewards(ctx context.Context, req domain.FindUserRewardsRequest) (domain.FindUserRewardsResult, error) {
+	log := common.NewAppLogger(ctx, "RewardsService.FindUserRewards")
+
+	result, err := s.repo.FindUserRewards(ctx, req)
+	if err != nil {
+		log.Error().Err(err).Msg("find user rewards failed")
+		return domain.FindUserRewardsResult{}, err
+	}
+
+	return result, nil
+}
+
 func (s *RewardsService) ClaimReward(ctx context.Context, userID uint, rewardID uint) error {
 	log := common.NewAppLogger(ctx, "RewardsService.ClaimReward")
 
