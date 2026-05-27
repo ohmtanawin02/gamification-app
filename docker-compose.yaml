@@ -1,0 +1,82 @@
+services:
+  postgres-primary:
+    image: bitnami/postgresql:latest
+    container_name: point_postgres_primary
+    restart: unless-stopped
+
+    environment:
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_DATABASE: point_db
+
+      POSTGRESQL_REPLICATION_MODE: master
+      POSTGRESQL_REPLICATION_USER: replicator
+      POSTGRESQL_REPLICATION_PASSWORD: replicator123
+
+    ports:
+      - "9291:5432"
+
+    volumes:
+      - postgres_primary_data:/bitnami/postgresql
+      - ./migrations/schema:/docker-entrypoint-initdb.d
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d point_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-replica:
+    image: bitnami/postgresql:latest
+    container_name: point_postgres_replica
+    restart: unless-stopped
+
+    depends_on:
+      postgres-primary:
+        condition: service_healthy
+
+    environment:
+      POSTGRESQL_USERNAME: postgres
+      POSTGRESQL_PASSWORD: postgres
+      POSTGRESQL_DATABASE: point_db
+
+      POSTGRESQL_REPLICATION_MODE: slave
+      POSTGRESQL_REPLICATION_USER: replicator
+      POSTGRESQL_REPLICATION_PASSWORD: replicator123
+      POSTGRESQL_MASTER_HOST: postgres-primary
+      POSTGRESQL_MASTER_PORT_NUMBER: 5432
+
+    ports:
+      - "9292:5432"
+
+    volumes:
+      - postgres_replica_data:/bitnami/postgresql
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d point_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: point_redis
+    restart: unless-stopped
+    command: redis-server --save 60 1 --loglevel warning
+
+    ports:
+      - "6381:6379"
+
+    volumes:
+      - redis_data:/data
+
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+volumes:
+  postgres_primary_data:
+  postgres_replica_data:
+  redis_data:
