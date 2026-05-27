@@ -28,7 +28,7 @@ type UserListResponse struct {
 type RewardItem struct {
 	ID         uint   `json:"id"`
 	Name       string `json:"name"`
-	CheckPoint int    `json:"checkpoint"`
+	CheckPoint int    `json:"check_point"`
 	Claimed    bool   `json:"claimed"`
 }
 

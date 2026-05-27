@@ -8,6 +8,7 @@ import (
 
 	"gamification-app/internal/rewards/domain"
 	"gamification-app/internal/rewards/handler/dto"
+	"gamification-app/pkg/auth"
 	"gamification-app/pkg/common"
 	"gamification-app/pkg/constants"
 )
@@ -32,8 +33,10 @@ func FindAllUserRewards(cfg FindAllUserRewardsHandlerCfg) fiber.Handler {
 		page, _ := strconv.Atoi(c.Query("page", "1"))
 		limit, _ := strconv.Atoi(c.Query("limit", "20"))
 		nickname := c.Query("nickname", "")
+		userID, _ := auth.GetUserID(c.UserContext())
 
 		req := domain.FindUserRewardsRequest{
+			UserID:   userID,
 			Nickname: nickname,
 			Page:     page,
 			Limit:    limit,
