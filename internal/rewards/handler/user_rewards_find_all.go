@@ -8,6 +8,7 @@ import (
 
 	"gamification-app/internal/rewards/domain"
 	"gamification-app/internal/rewards/handler/dto"
+	"gamification-app/pkg/auth"
 	"gamification-app/pkg/common"
 	"gamification-app/pkg/constants"
 )
@@ -16,13 +17,26 @@ type FindAllUserRewardsHandlerCfg struct {
 	Service domain.RewardsService
 }
 
+// FindAllUserRewards godoc
+// @Summary      Get claimed rewards by user
+// @Tags         rewards
+// @Produce      json
+// @Param        page      query  int     false  "Page"
+// @Param        limit     query  int     false  "Limit"
+// @Param        nickname  query  string  false  "Filter by nickname"
+// @Success      200
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/user-rewards [get]
 func FindAllUserRewards(cfg FindAllUserRewardsHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		page, _ := strconv.Atoi(c.Query("page", "1"))
 		limit, _ := strconv.Atoi(c.Query("limit", "20"))
 		nickname := c.Query("nickname", "")
+		userID, _ := auth.GetUserID(c.UserContext())
 
 		req := domain.FindUserRewardsRequest{
+			UserID:   userID,
 			Nickname: nickname,
 			Page:     page,
 			Limit:    limit,

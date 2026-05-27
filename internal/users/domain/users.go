@@ -41,3 +41,8 @@ type UserRewardItem struct {
 	CheckPoint int
 	Claimed    bool
 }
+
+type GetMeResult struct {
+	User    *Users
+	Rewards []UserRewardItem
+}

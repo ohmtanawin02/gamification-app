@@ -9,11 +9,13 @@ import (
 	"github.com/gofiber/contrib/fiberzerolog"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	swagger "github.com/gofiber/swagger"
 	"github.com/google/uuid"
 	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 
 	"gamification-app/config"
+	_ "gamification-app/docs"
 	gamesHistoriesHandler "gamification-app/internal/games-histories/handler"
 	gamesHandler "gamification-app/internal/games/handler"
 	rewardsHandler "gamification-app/internal/rewards/handler"
@@ -63,6 +65,8 @@ func NewServer(cfg *config.Config) *fiber.App {
 		Password: cfg.RedisPassword,
 		DB:       cfg.RedisDB,
 	})
+
+	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	app.Get("/health", func(c *fiber.Ctx) error {
 		readSQLDB, _ := readDB.DB()

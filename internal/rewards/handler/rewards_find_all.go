@@ -16,6 +16,18 @@ type FindAllRewardsHandlerCfg struct {
 	Service domain.RewardsService
 }
 
+// FindAllRewards godoc
+// @Summary      Get all rewards
+// @Tags         rewards
+// @Produce      json
+// @Param        page        query  int     false  "Page"
+// @Param        limit       query  int     false  "Limit"
+// @Param        search      query  string  false  "Search by name"
+// @Param        sort_order  query  string  false  "asc or desc"
+// @Success      200
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/rewards [get]
 func FindAllRewards(cfg FindAllRewardsHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		page, _ := strconv.Atoi(c.Query("page", "1"))

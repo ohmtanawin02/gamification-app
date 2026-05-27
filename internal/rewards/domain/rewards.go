@@ -32,6 +32,7 @@ type FindAllRewardsResult struct {
 }
 
 type FindUserRewardsRequest struct {
+	UserID   uint
 	Nickname string
 	Page     int
 	Limit    int

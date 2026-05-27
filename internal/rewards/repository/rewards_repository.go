@@ -84,6 +84,8 @@ func (r *RewardsRepository) FindUserRewards(ctx context.Context, req domain.Find
 
 	if req.Nickname != "" {
 		baseQuery = baseQuery.Where("u.nickname ILIKE ?", "%"+req.Nickname+"%")
+	} else if req.UserID > 0 {
+		baseQuery = baseQuery.Where("ur.user_id = ?", req.UserID)
 	}
 
 	var total int64
