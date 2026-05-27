@@ -11,7 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	swagger "github.com/gofiber/swagger"
 	"github.com/google/uuid"
-	"github.com/redis/go-redis/v9"
 	"github.com/rs/zerolog"
 
 	"gamification-app/config"
@@ -60,12 +59,6 @@ func NewServer(cfg *config.Config) *fiber.App {
 		logger.Panic().Err(err).Msg("failed to connect write db")
 	}
 
-	rdb := redis.NewClient(&redis.Options{
-		Addr:     cfg.RedisAddr,
-		Password: cfg.RedisPassword,
-		DB:       cfg.RedisDB,
-	})
-
 	app.Get("/swagger/*", swagger.HandlerDefault)
 
 	app.Get("/health", func(c *fiber.Ctx) error {
@@ -79,11 +72,6 @@ func NewServer(cfg *config.Config) *fiber.App {
 		if err := writeSQLDB.Ping(); err != nil {
 			return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{
 				"status": "unhealthy", "write_db": err.Error(),
-			})
-		}
-		if err := rdb.Ping(c.UserContext()).Err(); err != nil {
-			return c.Status(fiber.StatusServiceUnavailable).JSON(fiber.Map{
-				"status": "unhealthy", "redis": err.Error(),
 			})
 		}
 		return c.JSON(fiber.Map{"status": "ok"})
