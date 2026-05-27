@@ -95,6 +95,40 @@ func (r *UsersRepository) FindAll(ctx context.Context, req domain.FindAllUsersRe
 	return domain.FindAllUsersResult{Items: toUserEntities(ms), Total: total}, nil
 }
 
+func (r *UsersRepository) FindUserRewardsByUserID(ctx context.Context, userID uint) ([]domain.UserRewardItem, error) {
+	log := common.NewRepoLogger(ctx, "UsersRepository.FindUserRewardsByUserID")
+
+	type row struct {
+		ID         uint
+		Name       string
+		CheckPoint int
+		Claimed    bool
+	}
+	var rows []row
+	err := r.db.WithContext(ctx).Raw(`
+		SELECT r.id, r.name, r.check_point,
+		       (ur.user_id IS NOT NULL) AS claimed
+		FROM rewards r
+		LEFT JOIN user_rewards ur ON ur.reward_id = r.id AND ur.user_id = ?
+		ORDER BY r.check_point ASC
+	`, userID).Scan(&rows).Error
+	if err != nil {
+		log.Error().Err(err).Uint("user_id", userID).Msg("failed to find user rewards")
+		return nil, err
+	}
+
+	items := make([]domain.UserRewardItem, len(rows))
+	for i, r := range rows {
+		items[i] = domain.UserRewardItem{
+			ID:         r.ID,
+			Name:       r.Name,
+			CheckPoint: r.CheckPoint,
+			Claimed:    r.Claimed,
+		}
+	}
+	return items, nil
+}
+
 func (r *UsersRepository) FindUserByNickname(ctx context.Context, nickname string) (*domain.Users, error) {
 	log := common.NewRepoLogger(ctx, "UsersRepository.FindUserByNickname")
 

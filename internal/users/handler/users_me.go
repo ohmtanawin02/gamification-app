@@ -33,11 +33,26 @@ func GetMe(cfg GetMeHandlerCfg) fiber.Handler {
 				constants.CodeNotFound, constants.MessageENNotFound, constants.MessageTHNotFound, nil)
 		}
 
-		// TODO: inject rewards
+		rewardItems, err := cfg.Service.FindUserRewardsByUserID(c.UserContext(), user.ID)
+		if err != nil {
+			return common.ResponseJsonWithCode(c, fiber.StatusInternalServerError, uuid.New(),
+				constants.CodeInternalError, constants.MessageENSomethingWentWrong, constants.MessageTHSomethingWentWrong, nil)
+		}
+
+		rewards := make([]dto.RewardItem, len(rewardItems))
+		for i, r := range rewardItems {
+			rewards[i] = dto.RewardItem{
+				ID:         r.ID,
+				Name:       r.Name,
+				CheckPoint: r.CheckPoint,
+				Claimed:    r.Claimed,
+			}
+		}
+
 		resp := dto.UserMeResponse{
 			Nickname:    user.Nickname,
 			TotalPoints: user.TotalPoints,
-			Rewards:     []dto.RewardItem{},
+			Rewards:     rewards,
 		}
 
 		return common.ResponseJsonWithCode(c, fiber.StatusOK, uuid.Nil,
