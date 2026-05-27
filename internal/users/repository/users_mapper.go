@@ -29,13 +29,3 @@ func toUserEntities(users []models.Users) []domain.Users {
 	}
 	return result
 }
-
-func toUserModel(u domain.Users) models.Users {
-	return models.Users{
-		ID:          u.ID,
-		Nickname:    u.Nickname,
-		TotalPoints: u.TotalPoints,
-		CreatedAt:   u.CreatedAt,
-		UpdatedAt:   u.UpdatedAt,
-	}	
-}
