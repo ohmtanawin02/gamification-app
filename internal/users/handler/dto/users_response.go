@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"gamification-app/internal/users/domain"
+	"gamification-app/pkg/common"
 )
 
 type UserResponse struct {
@@ -19,24 +20,16 @@ type LoginResponse struct {
 	User  UserResponse `json:"user"`
 }
 
-type PaginationMeta struct {
-	Page       int   `json:"page"`
-	Limit      int   `json:"limit"`
-	Total      int64 `json:"total"`
-	TotalPages int64 `json:"total_pages"`
-}
-
 type UserListResponse struct {
-	Items []UserResponse `json:"items"`
-	Meta  PaginationMeta `json:"meta"`
+	Items []UserResponse        `json:"items"`
+	Meta  common.PaginationMeta `json:"meta"`
 }
-
 
 type RewardItem struct {
-	ID          uint   `json:"id"`
-	Name        string `json:"name"`
-	CheckPoint  int    `json:"checkpoint"`
-	Claimed     bool   `json:"claimed"`
+	ID         uint   `json:"id"`
+	Name       string `json:"name"`
+	CheckPoint int    `json:"checkpoint"`
+	Claimed    bool   `json:"claimed"`
 }
 
 type UserMeResponse struct {
@@ -73,6 +66,6 @@ func ToUserListResponse(result domain.FindAllUsersResult, page, limit int) UserL
 	}
 	return UserListResponse{
 		Items: items,
-		Meta:  PaginationMeta{Page: page, Limit: limit, Total: result.Total, TotalPages: totalPages},
+		Meta:  common.PaginationMeta{Page: page, Limit: limit, Total: result.Total, TotalPages: totalPages},
 	}
 }
