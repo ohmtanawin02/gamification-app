@@ -14,6 +14,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"gamification-app/config"
+	rewardsHandler "gamification-app/internal/rewards/handler"
+	usersHandler "gamification-app/internal/users/handler"
 	"gamification-app/pkg/common"
 	"gamification-app/pkg/constants"
 	"gamification-app/pkg/middleware"
@@ -82,21 +84,28 @@ func NewServer(cfg *config.Config) *fiber.App {
 	})
 
 	validate := validator.New()
-	_ = validate
-	_ = time.Duration(cfg.JWTExpireHours) * time.Hour
+	jwtTTL := time.Duration(cfg.JWTExpireHours) * time.Hour
 
 	api := app.Group("/api/v1")
-	_ = api
+	api.Use(middleware.JWTProtected(cfg.JWTSecret))
 
-	// Protected routes — ต้องมี JWT (uncomment when feature routers exist)
-	// api.Use(middleware.JWTProtected(cfg.JWTSecret))
-	//
-	// Example — wire a feature router here:
-	// rewardRouter.NewRewardRouterCfg{
-	//     App: api, ReadDB: readDB, WriteDB: writeDB,
-	//     Redis: rdb, Logger: logger, Validate: validate,
-	// }.NewRewardRouter()
-	_ = middleware.JWTProtected
+	usersHandler.NewUsersRouterCfg{
+		PublicApp:    app,
+		ProtectedApp: api,
+		WriteDB:      writeDB,
+		Logger:       logger,
+		Validate:     validate,
+		JWTSecret:    cfg.JWTSecret,
+		JWTTTL:       jwtTTL,
+	}.NewUsersRouter()
+
+	rewardsHandler.NewRewardsRouterCfg{
+		PublicApp:    app,
+		ProtectedApp: api,
+		WriteDB:      writeDB,
+		Logger:       logger,
+		Validate:     validate,
+	}.NewRewardsRouter()
 
 	app.Use(func(c *fiber.Ctx) error {
 		return common.ResponseJsonWithCode(c, fiber.StatusNotFound, uuid.New(),
