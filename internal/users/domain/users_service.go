@@ -7,4 +7,5 @@ type UsersService interface {
 	FindAll(ctx context.Context, req FindAllUsersRequest) (FindAllUsersResult, error)
 	FindUserByNickname(ctx context.Context, nickname string) (*Users, error)
 	FindUserRewardsByUserID(ctx context.Context, userID uint) ([]UserRewardItem, error)
+	GetMe(ctx context.Context, userID uint, nickname string) (*GetMeResult, error)
 }

@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"sync"
 
 	"gamification-app/internal/users/domain"
 	"gamification-app/pkg/common"
@@ -65,4 +66,41 @@ func (s *UsersService) FindUserRewardsByUserID(ctx context.Context, userID uint)
 	}
 
 	return items, nil
+}
+
+func (s *UsersService) GetMe(ctx context.Context, userID uint, nickname string) (*domain.GetMeResult, error) {
+	log := common.NewAppLogger(ctx, "UsersService.GetMe")
+
+	var (
+		user        *domain.Users
+		rewards     []domain.UserRewardItem
+		userErr     error
+		rewardsErr  error
+		wg          sync.WaitGroup
+	)
+
+	wg.Add(2)
+
+	go func() {
+		defer wg.Done()
+		user, userErr = s.repo.FindUserByNickname(ctx, nickname)
+	}()
+
+	go func() {
+		defer wg.Done()
+		rewards, rewardsErr = s.repo.FindUserRewardsByUserID(ctx, userID)
+	}()
+
+	wg.Wait()
+
+	if userErr != nil {
+		log.Error().Err(userErr).Str("nickname", nickname).Msg("find user failed")
+		return nil, userErr
+	}
+	if rewardsErr != nil {
+		log.Error().Err(rewardsErr).Uint("user_id", userID).Msg("find rewards failed")
+		return nil, rewardsErr
+	}
+
+	return &domain.GetMeResult{User: user, Rewards: rewards}, nil
 }
