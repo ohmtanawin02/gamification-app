@@ -31,6 +31,13 @@ type FindAllUsersRequest struct {
 }
 
 type FindAllUsersResult struct {
-    Items []Users
-    Total int64
+	Items []Users
+	Total int64
+}
+
+type UserRewardItem struct {
+	ID         uint
+	Name       string
+	CheckPoint int
+	Claimed    bool
 }
