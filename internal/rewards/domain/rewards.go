@@ -31,6 +31,24 @@ type FindAllRewardsResult struct {
 	Total int64
 }
 
+type FindUserRewardsRequest struct {
+	Nickname string
+	Page     int
+	Limit    int
+}
+
+type UserReward struct {
+	ID         uint
+	Name       string
+	CheckPoint int
+	ClaimedAt  time.Time
+}
+
+type FindUserRewardsResult struct {
+	Items []UserReward
+	Total int64
+}
+
 var (
 	ErrRewardNotFound       = errors.New("reward not found")
 	ErrInsufficientPoints   = errors.New("insufficient points")
