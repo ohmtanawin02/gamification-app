@@ -16,6 +16,18 @@ type FindAllUsersHandlerCfg struct {
 	Service domain.UsersService
 }
 
+// FindAllUsers godoc
+// @Summary      Get all users
+// @Tags         users
+// @Produce      json
+// @Param        page        query  int     false  "Page"
+// @Param        limit       query  int     false  "Limit"
+// @Param        nickname    query  string  false  "Filter by nickname"
+// @Param        sort_order  query  string  false  "asc or desc"
+// @Success      200
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/users [get]
 func FindAllUsers(cfg FindAllUsersHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		page, _ := strconv.Atoi(c.Query("page", "1"))

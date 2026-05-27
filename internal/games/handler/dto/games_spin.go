@@ -20,3 +20,11 @@ func (r *SpinRequest) ToDomainInput(userID uint) domain.SpinInput {
 		PointsEarned: r.PointsEarned,
 	}
 }
+
+type SpinResponse struct {
+	TotalPoints int `json:"total_points"`
+}
+
+func ToSpinResponse(result *domain.SpinResult) SpinResponse {
+	return SpinResponse{TotalPoints: result.TotalPoints}
+}

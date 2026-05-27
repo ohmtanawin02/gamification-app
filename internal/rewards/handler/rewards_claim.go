@@ -18,6 +18,20 @@ type ClaimRewardHandlerCfg struct {
 	Validate *validator.Validate
 }
 
+// ClaimReward godoc
+// @Summary      Claim a reward
+// @Tags         rewards
+// @Accept       json
+// @Produce      json
+// @Param        body  body  dto.ClaimRewardRequest  true  "Reward ID"
+// @Success      200
+// @Failure      400
+// @Failure      404
+// @Failure      409
+// @Failure      422
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/rewards/claim [post]
 func ClaimReward(cfg ClaimRewardHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var req dto.ClaimRewardRequest

@@ -16,6 +16,16 @@ type LoginHandlerCfg struct {
 	Validate *validator.Validate
 }
 
+// Login godoc
+// @Summary      Login or register
+// @Tags         auth
+// @Accept       json
+// @Produce      json
+// @Param        body  body  dto.LoginRequest  true  "Nickname"
+// @Success      200
+// @Failure      400
+// @Failure      500
+// @Router       /auth/login [post]
 func Login(cfg LoginHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var req dto.LoginRequest
