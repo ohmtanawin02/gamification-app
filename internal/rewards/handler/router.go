@@ -26,4 +26,5 @@ func (cfg NewRewardsRouterCfg) NewRewardsRouter() {
 
 	cfg.ProtectedApp.Get("/rewards", FindAllRewards(FindAllRewardsHandlerCfg{Service: svc}))
 	cfg.ProtectedApp.Post("/rewards/claim", ClaimReward(ClaimRewardHandlerCfg{Service: svc, Validate: cfg.Validate}))
+	cfg.ProtectedApp.Get("/user-rewards", FindAllUserRewards(FindAllUserRewardsHandlerCfg{Service: svc}))
 }
