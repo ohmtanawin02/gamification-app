@@ -16,6 +16,18 @@ type FindAllGamesHistoryHandlerCfg struct {
 	Service domain.GamesHistoryService
 }
 
+// FindAllGamesHistory godoc
+// @Summary      Get game histories
+// @Tags         histories
+// @Produce      json
+// @Param        page        query  int     false  "Page"
+// @Param        limit       query  int     false  "Limit"
+// @Param        nickname    query  string  false  "Filter by nickname"
+// @Param        sort_order  query  string  false  "asc or desc"
+// @Success      200
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/games-histories [get]
 func FindAllGamesHistory(cfg FindAllGamesHistoryHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		page, _ := strconv.Atoi(c.Query("page", "1"))

@@ -10,8 +10,17 @@ import (
 
 	"gamification-app/cmd/server"
 	"gamification-app/config"
+	_ "gamification-app/docs"
 )
 
+// @title           Gamification API
+// @version         1.0
+// @description     Gamification Web App API
+// @host            localhost:9393
+// @BasePath        /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
 func main() {
 	cfg, err := config.Read()
 	if err != nil {

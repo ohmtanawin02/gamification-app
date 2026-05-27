@@ -18,6 +18,18 @@ type GamesSpinHandlerCfg struct {
 	Validate *validator.Validate
 }
 
+// Spin godoc
+// @Summary      Spin the wheel to earn points
+// @Tags         games
+// @Accept       json
+// @Produce      json
+// @Param        body  body  dto.SpinRequest  true  "Points earned (300, 500, 1000, 3000)"
+// @Success      200
+// @Failure      400
+// @Failure      422
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/games/spin [post]
 func Spin(cfg GamesSpinHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var req dto.SpinRequest

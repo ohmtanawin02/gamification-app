@@ -15,6 +15,16 @@ type GetMeHandlerCfg struct {
 	Service domain.UsersService
 }
 
+// GetMe godoc
+// @Summary      Get current user profile with rewards
+// @Tags         users
+// @Produce      json
+// @Success      200
+// @Failure      401
+// @Failure      404
+// @Failure      500
+// @Security     BearerAuth
+// @Router       /api/v1/users/me [get]
 func GetMe(cfg GetMeHandlerCfg) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		nickname, ok := auth.GetNickname(c.UserContext())
